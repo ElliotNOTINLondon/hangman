@@ -72,13 +72,16 @@ def getRandomWord(wordList):
 def displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord):
     print(HANGMANPICS[len(missedLetters)])
     print()
+    
+    blanks = '_' * len(secretWord) + '\n'
 
-    print('Missed letters:', end='')
-    for letter in missedLetters:
-        print(letter, end='')
-    print()
-
-    blanks = '_ ' * len(secretWord)
+    if len(missedLetters + correctLetters) >= 1:
+        print('Missed letters:', end='')
+        
+        for letter in missedLetters:
+            print(letter, end='')
+            
+        print()
 
     for i in range(len(secretWord)):    # Replace blanks with correctly guessed letters
         if secretWord[i] in correctLetters:
@@ -91,7 +94,7 @@ def displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord):
 def getGuess(alreadyGuessed):
     # Returns the letter the player already entered. This function makes sure that the player entered a single letter.
     while True:
-        print('Guess a letter')
+        print('Please guess a letter')
         guess = input()
         guess = guess.lower()
         if len(guess) != 1:
@@ -108,19 +111,25 @@ def playAgain():
     print('Would you like to play again? (please enter yes or no)')
     return input().lower().startswith('y')
 
-#Initialise the game
+# Initialise the game
 print('\n H A N G M A N')
 missedLetters = ''
 correctLetters = ''
 secretWord = getRandomWord(words)
 gameIsDone = False
 
+
 while True:
     displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord)
-    
-    # First, prompt the player to type in a letter.
-    guess = getGuess(missedLetters + correctLetters)
 
+    # Create a welcome message
+    if len(missedLetters + correctLetters) < 1:
+        print('Welcome to HANGMAN. The GNU-Linux community has sentenced you to death for using Windows OS,\n' \
+              'but you will be pardoned if you correctly guess an arbitrary string. Good luck!\n')
+        
+    # Prompt the player to type in a letter.
+    guess = getGuess(missedLetters + correctLetters)
+    
     if guess in secretWord:
         correctLetters = correctLetters + guess
         
@@ -131,24 +140,25 @@ while True:
                 foundAllLetters = False
                 break
         if foundAllLetters:
-            print('Congratulations! You correctly guessed the secret word: ' + secretWord + '! ' + 'You\'re Winner!' )
+            print('\nCongratulations! You correctly guessed the secret word: ' + secretWord + '! ' )
             gameIsDone = True
-        else:
-            missedLetters = missedLetters + guess
+    else:
+        missedLetters = missedLetters + guess
             
-            # Check for the lose condition (final guess occurs before the player dies)
-            if len(missedLetters) == len(HANGMANPICS) - 1:
-                displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord)
-                print('You have run out of guesses. You might still be alive if you knew that the secret word was ' + secretWord + '...')
-                gameIsDone = True
+        # Check for the lose condition (final guess occurs before the player dies)
+        if len(missedLetters) == len(HANGMANPICS) - 1:
+            displayBoard(HANGMANPICS, missedLetters, correctLetters, secretWord)
+            print('You have run out of guesses and are killed by a rogue string (the noose). If only you knew that the secret word was ' + secretWord + '...')
+            gameIsDone = True
+        
 
         # Ask the player if they would like to play again (Requires game to be finished first).
-        if gameIsDone:
-            if playAgain():
-                missedLetters = ''
-                correctLetters = ''
-                gameIsDone = False
-                secretWord = getRandomWord(words)
-            else:
-                print('Thanks for playing!')
-                break
+    if gameIsDone:
+        if playAgain():
+            missedLetters = ''
+            correctLetters = ''
+            gameIsDone = False
+            secretWord = getRandomWord(words)
+        else:
+            print('Thanks for playing!')
+            break
