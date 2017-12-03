@@ -6,6 +6,7 @@ A game of hangman coded in Python3. This game uses the basic format provided in 
 	- Prompts/messages appear wherever necessary
 	- It "looks nice" (\n's included for readability)
 	- Squashing basic flow and input bugs
+	- Number of guesses left are displayed for len(guess) > 0
 - Learn about how to let users make choices in Python3, in order to...
   - Create more word banks and prompt the user to make a choice
   - Allow the user to select a difficulty, which will enable altering:
